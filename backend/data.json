@@ -1,0 +1,62 @@
+[
+  {
+    "FirstName": "Arman",
+    "MiddleName": "deep",
+    "LastName": "Singh",
+    "Email": "abc@g.com",
+    "phoneno": 789789999,
+    "role": 0,
+    "Address": "2402 ",
+    "id": 0
+  },
+  {
+    "FirstName": "Ojasve",
+    "MiddleName": " ",
+    "LastName": "Nanda",
+    "Email": "xyz@ab.com",
+    "phoneno": 99073478978,
+    "role": 1,
+    "Address": "2411",
+    "id": 1
+  },
+  {
+    "FirstName": "Ajay",
+    "MiddleName": "Vir",
+    "LastName": "Singh",
+    "Email": "abub.com",
+    "phoneno": 7897000978,
+    "role": 0,
+    "Address": "5523 ",
+    "id": 2
+  },
+  {
+    "FirstName": "Sai",
+    "MiddleName": "rai",
+    "LastName": "Sethi",
+    "Email": "ab@ab.com",
+    "phoneno": 75083478978,
+    "role": 0,
+    "Address": "3939 ",
+    "id": 3
+  },
+  {
+    "FirstName": "jas",
+    "MiddleName": "",
+    "LastName": "",
+    "Email": "xyzb.com",
+    "phoneno": 98873478978,
+    "role": 2,
+    "Address": "9999",
+    "id": 4
+  },
+  {
+    "FirstName": "Ross",
+    "MiddleName": "",
+    "LastName": "Geller",
+    "Email": "ab.com",
+    "phoneno": 78944444978,
+    "role": 1,
+    "Address": "3433",
+    "id": 5
+  }
+]

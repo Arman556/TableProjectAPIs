@@ -1,0 +1,52 @@
+
+table {
+    border-collapse: collapse;
+     width: 50%;
+  }
+  
+  table, th, td {
+    border: 1px solid black;
+  }
+  th {
+    background-color: #000000;
+    color: white;
+  }
+  
+  th, td {
+    text-align: center;
+  }
+  tr {
+    background-color: #113300;
+    color: white;
+  }
+  .deleteb {
+      width:100%;
+      background-color: #CB3306;
+  }
+  .editb{
+    width: 100%;
+      background-color:#06AB15 ;
+  }
+  /* #edit1{
+    background-color:#06AB15 ;
+}
+#edit2{
+    background-color:#06AB15 ;
+}
+#edit3{
+    background-color:#06AB15 ;
+}
+#edit4{
+    background-color:#06AB15 ;
+}
+#edit5{
+    background-color:#06AB15 ;
+}
+#edit6{
+    background-color:#06AB15 ;
+} */
+  #b1{
+  width: 10%;
+  background-color:#139BAB;
+
+  }
