@@ -1,12 +1,13 @@
 import * as Imp from "./class2.js";
-// import * as Imp1 from "./class3.js";
-let this1 = new Imp.fetchData();
-class actions {
-    //cell:any[]=[];
+import * as Imp1 from "./class4.js";
+let fetchData = new Imp.fetchJsonData();
+let validate = new Imp1.validations();
+class CrudOperations {
     constructor() {
         this.copy = [];
         this.arrHeaders = [];
         this.removeRow = [];
+        this.arr = [];
         let j = document.getElementById("b1");
         j.addEventListener("click", this.loadData);
     }
@@ -18,14 +19,9 @@ class actions {
             let div = document.getElementById("d1");
             div.innerHTML = " ";
         }
-        this1.fetch1().then(data => obj.create(data));
-        // let data1=this1.fetch1();
-        // this.create(data1);
+        fetchData.fetchData().then(data => obj.create(data));
     }
     create(Emp) {
-        // document.getElementById("LOAD").innerHTML = "REFRESH DATA";
-        // let div = document.getElementById("id1");
-        // div.innerHTML = " ";
         this.table = document.createElement("table");
         this.arrHeaders = [
             "FirstName",
@@ -96,25 +92,8 @@ class actions {
         this.copyLastRow(val);
         console.log(this.copy);
         if (this.flag) {
-            // this.flag = false;
-            // for (let i = 0; i <cell.length; i++) {
-            //   // cell[i].setAttribute("contenteditable", "true");
-            //   if(i===5)
-            //   {
-            //     cell[i].innerHTML = `<select id = "role1">
-            //     <option value ="1">QA</option>
-            //     <option value ="0">Developer</option>
-            //     <option value ="2">DevOps</option>
-            //     `;
-            //   }
-            //   else{
-            //   cell[i].innerHTML ='<input type = "text" >';}
-            // }
-            // this.changeButton(val);
-            // this.disableButtons(val);  
             this.flag = false;
             for (let i = 0; i < cell.length; i++) {
-                // cell[i].setAttribute("contenteditable", "true");
                 if (i === 5) {
                     cell[i].innerHTML = `<select id = "role1">
           <option value ="1">QA</option>
@@ -131,6 +110,7 @@ class actions {
         }
         else {
             this.flag = true;
+            this.arr[val + 1] = 1;
             document.getElementById("newbtn").removeAttribute("disabled");
             let row_array = [];
             for (let i = 0; i < cell.length; i++) {
@@ -141,25 +121,62 @@ class actions {
                     row_array[i] = cell[i].childNodes[0].value;
                 }
             }
-            let newEmployee = new Imp.Employee(row_array[0], row_array[1], row_array[2], row_array[3], +row_array[4], +row_array[5], row_array[6]);
-            newEmployee.id = val;
-            this.copy = [];
-            fetch(`http://localhost:3000/update/${val}`, {
-                method: "put",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newEmployee)
-            }).then(res => {
-                for (let i = 0; i < this.cols; i++) {
-                    if (i === 5) {
-                        cell[i].innerHTML = Imp.ROLES[+cell[i].childNodes[0].value];
+            if (!validate.email(row_array[3])) {
+                this.flag = false;
+                cell[3].innerHTML += '<span id="span1" style="color:red" ></span>';
+                let span1 = document.getElementById("span1");
+                span1.style.fontSize = "12px";
+                span1.innerHTML = "invalid email";
+            }
+            if (!validate.phoneno(`${row_array[4]}`)) {
+                this.flag = false;
+                cell[4].innerHTML += '<span id="span2" style="color:red" ></span>';
+                let span1 = document.getElementById("span2");
+                span1.style.fontSize = "12px";
+                span1.innerHTML = "invalid phoneNo.";
+            }
+            if (!validate.notempty(row_array[0])) {
+                this.flag = false;
+                cell[0].innerHTML += '<span id="span3" style="color:red" ></span>';
+                let span1 = document.getElementById("span3");
+                span1.style.fontSize = "12px";
+                span1.innerHTML = "enter firstname";
+            }
+            if (!validate.notempty(row_array[6])) {
+                this.flag = false;
+                cell[6].innerHTML += '<span id="span4" style="color:red" ></span>';
+                let span1 = document.getElementById("span4");
+                span1.style.fontSize = "12px";
+                span1.innerHTML = "enter address";
+            }
+            if (!validate.notempty(row_array[2])) {
+                this.flag = false;
+                cell[2].innerHTML += '<span id="span5" style="color:red" ></span>';
+                let span1 = document.getElementById("span5");
+                span1.style.fontSize = "12px";
+                span1.innerHTML = "enter lastname";
+            }
+            if (validate.notempty(row_array[2]) && validate.email(row_array[3]) && validate.notempty(row_array[6]) && validate.notempty(row_array[0]) && validate.phoneno(`${row_array[4]}`)) {
+                let newEmployee = new Imp.Employee(row_array[0], row_array[1], row_array[2], row_array[3], +row_array[4], +row_array[5], row_array[6]);
+                newEmployee.id = val;
+                this.copy = [];
+                fetch(`http://localhost:3000/updateEmployee/${val}`, {
+                    method: "put",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newEmployee)
+                }).then(res => {
+                    for (let i = 0; i < this.cols; i++) {
+                        if (i === 5) {
+                            cell[i].innerHTML = Imp.ROLES[+cell[i].childNodes[0].value];
+                        }
+                        else {
+                            cell[i].innerHTML = cell[i].childNodes[0].value;
+                        }
                     }
-                    else {
-                        cell[i].innerHTML = cell[i].childNodes[0].value;
-                    }
-                }
-                this.changeAgain(val);
-                this.enableButtons(val);
-            });
+                    this.changeAgain(val);
+                    this.enableButtons(val);
+                });
+            }
         }
     }
     deleteRow(val) {
@@ -167,7 +184,7 @@ class actions {
         let cellClass = "cell" + val;
         let cell = document.getElementsByClassName(cellClass);
         if (this.flag) {
-            fetch(`http://localhost:3000/delete/${val}`, {
+            fetch(`http://localhost:3000/deleteEmployee/${val}`, {
                 method: "delete"
             })
                 .then(res => {
@@ -177,28 +194,44 @@ class actions {
             });
         }
         else {
+            let deletebtn = "delete" + val;
+            for (let i = 0; i < this.rows; i++) {
+                this.arr[i] = 1;
+            }
+            let btnid = document.getElementById(deletebtn).innerHTML;
+            console.log(btnid);
+            console.log(this.arr[val + 1]);
+            if ((btnid == "cancel") && this.arr[val + 1] == 0) {
+                console.log("entering block");
+                fetch(`http://localhost:3000/deleteEmployee/${val}`, {
+                    method: "delete"
+                })
+                    .then(res => {
+                    let delete_row = document.getElementById(row_id);
+                    delete_row.parentNode.removeChild(delete_row);
+                    this.removeRow[val] = true;
+                });
+            }
+            else {
+                this.pasteLastRow(val);
+                this.copy = [];
+            }
+            this.arr[val + 1] = 1;
             this.flag = true;
             document.getElementById("newbtn").removeAttribute("disabled");
-            this.pasteLastRow(val);
-            this.copy = [];
-            // for (let i = 0; i < this.rows; i++) {
-            //   cell[i].setAttribute("contenteditable", "false");
-            // }
             this.changeAgain(val);
             this.enableButtons(val);
-            console.log(this.flag);
         }
     }
     copyLastRow(val) {
         let cellClass = "cell" + val;
         let cell = document.getElementsByClassName(cellClass);
-        //console.log(cell);
         for (let i = 0; i < this.cols; i++) {
             if (i === 5) {
-                this.copy[i] = Imp.ROLES[+cell[i].innerHTML];
+                this.copy[i] = cell[i].innerHTML;
             }
             else if (i == 4) {
-                this.copy[i] = +cell[i].innerHTML;
+                this.copy[i] = cell[i].innerHTML;
                 console.log(this.copy[i]);
             }
             else {
@@ -243,19 +276,8 @@ class actions {
     }
     addrow() {
         let ind = this.rows;
-        //console.log(ind);
         let tr = this.table.insertRow(-1);
         tr.setAttribute("id", "row" + ind);
-        // tr.innerHTML =
-        //   '<td class="cell' + ind + '"><input type="text"></td>' +
-        //   '<td class="cell' + ind + '"><input type="text"></td>' +
-        //   '<td class="cell' + ind + '"><input type="text"></td>' +
-        //   '<td class="cell' + ind + '"><input type="text"></td>' +
-        //   '<td class="cell' + ind + '"><input type="text"></td>' +
-        //   '<td class="cell' + ind + '"><select id = "role1"><option value ="1">QA</option><option value ="0">Developer</option><option value ="2">DevOps</option></td>' +
-        //   '<td class="cell' + ind + '"><input type="text"></td>' +
-        //   '<td> <button type="button" class="editb" id="edit' + ind + '"> Save </button></td>' +
-        //   '<td> <button type="button" class="deleteb" id="delete' + ind + '"> cancel </button></td>';
         tr.innerHTML =
             '<td class="cell' + ind + '"></td>' +
                 '<td class="cell' + ind + '"></td>' +
@@ -266,10 +288,11 @@ class actions {
                 '<td class="cell' + ind + '"></td>' +
                 '<td> <button type="button" class="editb" id="edit' + ind + '">  </button></td>' +
                 '<td> <button type="button" class="deleteb" id="delete' + ind + '"> </button></td>';
+        this.arr[ind + 1] = 0;
         let newEmployee = new Imp.Employee("", "", "", "", 1, 2, "");
         newEmployee.id = ind;
         console.log(newEmployee);
-        fetch(`http://localhost:3000/addrow/${ind}`, {
+        fetch(`http://localhost:3000/addEmployee/${ind}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newEmployee)
@@ -288,4 +311,4 @@ class actions {
         this.rows++;
     }
 }
-export let obj = new actions();
+export let obj = new CrudOperations;
