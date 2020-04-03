@@ -5,7 +5,6 @@ let app=express();
 let fs=require('fs');
 let bodyParser = require('body-parser');
 app.listen(3000);
-
 app.use(bodyParser.json());
 function modifyjson()
 {
@@ -13,73 +12,55 @@ function modifyjson()
   let actual_json = JSON.parse(raw_json);
   for(let i=0;i<actual_json.length;i++)
   {
-   // console.log(actual_json[i].id);
     actual_json[i].id = i;
   }
   fs.writeFileSync("data.json",JSON.stringify(actual_json),(err:Error)=> {
-    // If an error occurred, show it and return
-    if(err) return console.error(err);
-    // Successfully wrote to the file!
   });
 }
-app.get("/class2",function(req:Request,res:Response){
+app.get("/fetchJsonData",function(req:Request,res:Response){
   modifyjson();
-  let data =fs.readFileSync('data.json');
-  let words=JSON.parse(data);
-  console.log(words);
-
-res.send(words);
+  let jsondata =fs.readFileSync('data.json');
+  let data=JSON.parse(jsondata);
+res.send(data);
 });
 
-app.delete("/delete/:id",function(req:Request,res:Response)
+app.delete("/deleteEmployee/:id",function(req:Request,res:Response)
 {
-let data =fs.readFileSync('data.json');
-let words=JSON.parse(data);
+let jsondata =fs.readFileSync('data.json');
+let data=JSON.parse(jsondata);
 let id=req.params.id;
-let v=words.length;
-  // console.log(words);
+let v=data.length;
    for(let i=0;i<v;i++){
-      if(words[i].id==id){
-       words.splice(i,1);
+      if(data[i].id==id){
+       data.splice(i,1);
 break;
       }
    }
-   fs.writeFile('data.json',JSON.stringify(words),(err:Error)=> {
-    // If an error occurred, show it and return
-    if(err) return console.error(err);
-    // Successfully wrote to the file!
+   fs.writeFile('data.json',JSON.stringify(data),(err:Error)=> {
     res.send();
   })
 });
 
-app.put('/update/:id',function(req:Request,res:Response){
-	console.log("Data create");
-	const data=fs.readFileSync('data.json');
-	const actual=JSON.parse(data);
+app.put('/updateEmployee/:id',function(req:Request,res:Response){
+	const jsondata=fs.readFileSync('data.json');
+	const data=JSON.parse(jsondata);
     const value=req.body;
-	for(let i=0;i<actual.length;i++){
-		if(actual[i].id==req.params.id){
-		   actual[i]=value;
+	for(let i=0;i<data.length;i++){
+		if(data[i].id==req.params.id){
+		   data[i]=value;
 		   break;
 		}
 	 }
-    fs.writeFile('data.json', JSON.stringify(actual),(err:Error)=> {
-		// If an error occurred, show it and return
-		if(err) return console.error(err);
-		// Successfully wrote to the file!
+    fs.writeFile('data.json', JSON.stringify(data),(err:Error)=> {
 		res.send();
 	  });
 });
-app.post("/addrow/:id",function(req:Request,res:Response){
-  console.log("new entery added");
-  const data=fs.readFileSync('data.json');
-  const act=JSON.parse(data);
+app.post("/addEmployee/:id",function(req:Request,res:Response){
+  const jsondata=fs.readFileSync('data.json');
+  const data=JSON.parse(jsondata);
   const value=req.body;
-  act.push(value);
-  fs.writeFile('data.json', JSON.stringify(act),(err:Error)=> {
-		// If an error occurred, show it and return
-		if(err) return console.error(err);
-		// Successfully wrote to the file!
+  data.push(value);
+  fs.writeFile('data.json', JSON.stringify(data),(err:Error)=> {	
 		res.send();
 	  });
 });
